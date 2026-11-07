@@ -1791,7 +1791,6 @@ const products = [
     images: [
       "images/productos/mafia.png", 
     ],
-    heroImage: "images/optimized/productos/hero/taza-padron.jpg",
     color: "#e5d5f1",
     desc: "Tieniti gli amici stretti ma i nemici ancora più stretti.",
   },
@@ -1806,7 +1805,7 @@ const products = [
     images: [
       "images/productos/tren.png",
     ],
-    heroImage: "images/optimized/productos/taza_conejo.jpg",
+    heroImage: "",
     color: "#f3e5a9",
     desc: "Hogwarts Express",
   },
@@ -3171,13 +3170,20 @@ function getProductImages(product) {
 }
 
 function renderHeroCarousel() {
-  heroSlides = products
-    .slice(0, 4)
+  const availableSlides = products
+    .filter((product) => getProductImages(product).length)
     .map((product) => ({
       product,
-      image: product.heroImage || getProductImages(product)[0],
-    }))
-    .filter((slide) => slide.image);
+      image: `images/productos/hero/product-${product.id}.jpg`,
+    }));
+  for (let index = availableSlides.length - 1; index > 0; index--) {
+    const randomIndex = Math.floor(Math.random() * (index + 1));
+    [availableSlides[index], availableSlides[randomIndex]] = [
+      availableSlides[randomIndex],
+      availableSlides[index],
+    ];
+  }
+  heroSlides = availableSlides.slice(0, 4);
 
   const track = document.getElementById("hero-carousel-track");
   const dots = document.getElementById("hero-carousel-dots");
